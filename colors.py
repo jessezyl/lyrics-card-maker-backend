@@ -68,14 +68,18 @@ def dominant_colors(url: str) -> tuple:
         "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36"
     }
 
-    request = Request(url, headers=headers)
-    response = urlopen(request)
+    color_thief = None
+    if url.startswith(f"http://") or url.startswith(f"https://"):
+        request = Request(url, headers=headers)
+        response = urlopen(request)
 
-    image_bytes = BytesIO(response.read())
-    image = Image.open(image_bytes)
+        image_bytes = BytesIO(response.read())
+        image = Image.open(image_bytes)
 
-    # Extract dominant color using colorthief
-    color_thief = ColorThief(image_bytes)
+        # Extract dominant color using colorthief
+        color_thief = ColorThief(image_bytes)
+    else:
+       color_thief = ColorThief(url)
 
     palette = color_thief.get_palette(color_count=5)
 
